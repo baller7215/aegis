@@ -32,7 +32,7 @@ export function CategoryFilters({ selected, onSelect }: CategoryFiltersProps) {
             }`}
           >
             <Text
-              className={`text-sm font-medium ${
+              className={`text-sm lowercase font-medium ${
                 isSelected ? 'text-white' : 'text-black'
               }`}
             >

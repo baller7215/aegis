@@ -12,11 +12,11 @@ type ContentCardProps = {
 };
 
 const TAG_ICONS: Record<CardTag, keyof typeof Ionicons.glyphMap> = {
-  'HIGH RISK': 'shield-checkmark',
-  MISINFO: 'close-circle',
-  BIAS: 'document-text',
-  SCAM: 'musical-notes',
-  SAFE: 'desktop-outline',
+  'HIGH RISK': 'warning',
+  MISINFO: 'alert-circle',
+  BIAS: 'bar-chart',
+  SCAM: 'card-outline',
+  SAFE: 'shield-checkmark',
 };
 
 export function ContentCard({

@@ -64,6 +64,7 @@ export default function HomeScreen() {
           {MOCK_CARDS.map((card, index) => (
             <View
               key={index}
+              // full width if true, otherwise 47%
               style={{ width: card.fullWidth ? '100%' : '47%' }}
             >
               <ContentCard
