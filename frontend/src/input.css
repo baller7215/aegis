@@ -19,10 +19,15 @@
     @apply flex items-center gap-3 py-3 px-4 bg-gray-50 dark:bg-[#2f2f2f] border border-gray-200 dark:border-[#404040] rounded-xl cursor-pointer select-none;
     transition:
       background 0.2s ease,
-      border-color 0.2s ease;
+      border-color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
   }
   .aegis-row:hover {
     @apply bg-gray-100 dark:bg-[#3f3f3f] border-gray-300 dark:border-[#525252];
+  }
+  .aegis-row:active {
+    transform: scale(0.995);
   }
 
   .aegis-shield {
@@ -60,7 +65,8 @@
 
   /* Meter */
   .aegis-meter-section {
-    @apply mb-5;
+    @apply mb-5 opacity-0 animate-aegis-fade-up;
+    animation-delay: 0.05s;
   }
   .aegis-section-title {
     @apply text-xs font-medium text-gray-500 dark:text-gray-400 mb-3 tracking-wide;
@@ -78,7 +84,15 @@
     @apply flex-1 h-2 bg-gray-200 dark:bg-[#404040] rounded overflow-hidden;
   }
   .aegis-meter-bar {
-    @apply h-full rounded transition-[width] duration-300;
+    @apply h-full rounded origin-left;
+    transform-origin: left;
+    animation: aegis-bar-fill 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .aegis-meter-row:nth-child(1) .aegis-meter-bar {
+    animation-delay: 0.2s;
+  }
+  .aegis-meter-row:nth-child(2) .aegis-meter-bar {
+    animation-delay: 0.3s;
   }
   .aegis-meter-confidence .aegis-meter-bar {
     background: linear-gradient(90deg, #3b82f6, #60a5fa);
@@ -92,7 +106,8 @@
 
   /* Context list */
   .aegis-context-section {
-    @apply mb-5;
+    @apply mb-5 opacity-0 animate-aegis-fade-up;
+    animation-delay: 0.12s;
   }
   .aegis-context-list {
     @apply m-0 pl-5 text-[13px] text-gray-600 dark:text-gray-300 leading-relaxed;
@@ -103,18 +118,24 @@
 
   /* Bias summary - softer, more informative tone */
   .aegis-bias-section {
-    @apply mb-5 py-3 px-3.5 bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/50 rounded-lg text-[13px] text-amber-800 dark:text-amber-200/90;
+    @apply mb-5 py-3 px-3.5 bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/50 rounded-lg text-[13px] text-amber-800 dark:text-amber-200/90 opacity-0 animate-aegis-fade-up;
+    animation-delay: 0.18s;
   }
 
   /* Actions */
   .aegis-actions {
-    @apply flex gap-2.5 flex-wrap mt-5 pt-4 border-t border-gray-200 dark:border-[#404040];
+    @apply flex gap-2.5 flex-wrap mt-5 pt-4 border-t border-gray-200 dark:border-[#404040] opacity-0 animate-aegis-fade-up;
+    animation-delay: 0.24s;
   }
   .aegis-btn {
     @apply py-2 px-3.5 rounded-lg text-[13px] font-medium cursor-pointer border-none transition-all duration-200;
   }
+  .aegis-btn:hover {
+    transform: translateY(-1px);
+  }
   .aegis-btn:active {
     @apply scale-[0.98];
+    transform: scale(0.98) translateY(0);
   }
   .aegis-btn-primary {
     @apply bg-blue-500 text-white;
@@ -149,5 +170,31 @@
   }
   .aegis-failures-list li {
     @apply mb-1;
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .aegis-row,
+  .aegis-btn,
+  .aegis-chevron,
+  .aegis-meter-section,
+  .aegis-context-section,
+  .aegis-bias-section,
+  .aegis-actions,
+  .aegis-meter-bar {
+    animation: none !important;
+  }
+  .aegis-meter-section,
+  .aegis-context-section,
+  .aegis-bias-section,
+  .aegis-actions {
+    opacity: 1 !important;
+  }
+  .aegis-row:active {
+    transform: none;
+  }
+  .aegis-btn:hover {
+    transform: none;
   }
 }
