@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 @layer components {
-  /* Panel */
+  /* Panel - embedded inside article, constrained to content width */
   .aegis-panel {
-    @apply text-sm leading-normal text-gray-700 my-3 mb-6 rounded-xl overflow-hidden;
+    @apply text-sm leading-normal text-gray-700 my-3 mb-6 rounded-xl overflow-hidden max-w-full w-full;
     font-family: var(--font-sans, theme("fontFamily.sans"));
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     transition: box-shadow 0.2s ease;

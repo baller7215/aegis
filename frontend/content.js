@@ -150,26 +150,14 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-function isAssistantMessage(el) {
-  return (
-    el.querySelector(".markdown") ||
-    el.querySelector("[data-message-author-role='assistant']") ||
-    el.closest("[data-message-author-role='assistant']")
-  );
-}
-
 function injectPanels() {
-  const candidates = document.querySelectorAll("article, div.group");
-  for (const container of candidates) {
-    if (!isAssistantMessage(container)) continue;
-    if (container.hasAttribute(AEGIS_ATTR)) continue;
-    const next = container.nextElementSibling;
-    if (next?.classList?.contains("aegis-panel")) continue;
+  const responseDivs = document.querySelectorAll("[data-message-author-role='assistant']");
+  for (const container of responseDivs) {
+    if (container.querySelector(".aegis-panel")) continue;
 
     const analysis = getMockAnalysis();
     const panel = createAegisPanel(analysis);
-    container.setAttribute(AEGIS_ATTR, "true");
-    container.after(panel);
+    container.appendChild(panel);
   }
 }
 

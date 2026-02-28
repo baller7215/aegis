@@ -588,11 +588,13 @@ video {
   }
 }
 
-/* Panel */
+/* Panel - embedded inside article, constrained to content width */
 
 .aegis-panel {
   margin-top: 0.75rem;
   margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
   border-radius: 0.75rem;
   font-size: 0.875rem;
@@ -1214,6 +1216,10 @@ video {
   width: 2rem;
 }
 
+.max-w-full {
+  max-width: 100%;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -1246,6 +1252,10 @@ video {
 
 .gap-2\.5 {
   gap: 0.625rem;
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }
 
 .truncate {
