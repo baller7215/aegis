@@ -109,6 +109,7 @@ export default function ReviewDetailScreen() {
         </View>
 
         {/* confidence gap + cognitive bias row */}
+        {/** @TODO add actual data + fix ui */}
         <View className="flex-row gap-4 mb-4">
           <View className="flex-1 rounded-2xl p-5 bg-[#FEF9E0]">
             <View className="flex-row items-center gap-2 mb-4">
@@ -166,6 +167,7 @@ export default function ReviewDetailScreen() {
         </View>
 
         {/* source analysis card */}
+        {/** @TODO quality of life feature */}
         <View className="rounded-2xl p-5 mb-8 bg-white shadow-sm">
           <Text className="text-xs text-gray-400 text-right mb-3">
             Analyzed 2m ago
