@@ -28,11 +28,11 @@ function getMockAnalysis() {
   };
 }
 
-const shieldIcon = `<svg class="aegis-shield" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.5">
+const shieldIcon = `<svg class="aegis-shield" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
 </svg>`;
 
-const chevronIcon = `<svg class="aegis-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+const chevronIcon = `<svg class="aegis-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
   <path d="M6 9l6 6 6-6"/>
 </svg>`;
 
@@ -77,7 +77,7 @@ function createAegisPanel(analysis) {
       </div>
     </div>
     <div class="aegis-context-section">
-      <div class="aegis-section-title">Missing context / assumptions</div>
+      <div class="aegis-section-title">Missing context</div>
       <ul class="aegis-context-list">
         ${analysis.missingContext.map(c => `<li>${escapeHtml(c)}</li>`).join("")}
       </ul>
@@ -87,7 +87,7 @@ function createAegisPanel(analysis) {
     </div>
     <div class="aegis-actions">
       <button class="aegis-btn aegis-btn-primary" data-action="recalibrate">Recalibrate response</button>
-      <button class="aegis-btn aegis-btn-secondary" data-action="failures">What could make this wrong?</button>
+      <button class="aegis-btn aegis-btn-secondary" data-action="failures">What could make this wrong</button>
     </div>
     <div class="aegis-recalibrated-wrap" hidden></div>
     <div class="aegis-failures-wrap" hidden></div>
