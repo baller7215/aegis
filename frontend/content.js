@@ -4,8 +4,131 @@
  */
 
 const AEGIS_ATTR = "data-aegis-injected";
+const STREAMING_DEBOUNCE_MS = 800;
 
-// Mock analysis data (replace with API call to backend)
+/**
+ * extracts the response text from the container by checking the following:
+ * - if the container has a markdown class
+ * - if the container has a prose class
+ * - if the container has a markdown class with a space and a class
+ * - return the inner text of the container or an empty string if no text is found
+ * @param {HTMLElement} container 
+ * @returns {string} the response text
+ */
+function extractResponseText(container) {
+  const markdown = container.querySelector(".markdown, .prose, [class*='markdown']");
+  return (markdown || container).innerText?.trim() || "";
+}
+
+function getConversationThread() {
+  const turns = [];
+  const articles = document.querySelectorAll("article[data-turn-id]");
+
+  for (const article of articles) {
+    const user = article.querySelector("[data-message-author-role='user']");
+    const assistant = article.querySelector("[data-message-author-role='assistant']");
+
+    if (user) {
+      const text = extractResponseText(user);
+      if (text) turns.push({ role: "user", content: text });
+    }
+    if (assistant) {
+      const text = extractResponseText(assistant);
+      if (text) turns.push({ role: "assistant", content: text });
+    }
+  }
+  return turns;
+}
+
+/**
+ * detects if the container is streaming or not by checking the following:
+ * - if the container is an article
+ * - if the article has a data-writing-block
+ * - if the article has a has-data-writing-block class
+ * - if the article contains a stop-generating-button
+ * - return true if the container is streaming
+ * - return false if the container is not streaming
+ * @param {HTMLElement} container 
+ * @returns {boolean} true if the container is streaming, false otherwise
+ */
+function isStreaming(container) {
+  const article = container.closest("article");
+  if (!article) return false;
+  if (article.querySelector("[data-writing-block]")) return true;
+  if (article.classList.contains("has-data-writing-block")) return true;
+  const stopBtn = document.querySelector("[data-testid='stop-generating-button']");
+  if (stopBtn && article.contains(stopBtn.closest("article"))) return true;
+  return false;
+}
+
+/**
+ * waits for the streaming to complete by calling the isStreaming function and checking the following:
+ * - if the text has changed
+ * - if the streaming has stopped
+ * - if the text is stable for the debounce time
+ * - if the elapsed time has exceeded the max wait time
+ * - return true if the streaming is complete
+ * - return false if the streaming is not complete
+ * @param {HTMLElement} container 
+ * @returns {Promise<void>} resolves when the streaming is complete
+ */
+function waitForStreamingComplete(container) {
+  return new Promise((resolve) => {
+    const pollInterval = 150;
+    const maxWaitMs = 60000;
+    let lastText = "";
+    let stableSince = Date.now();
+    const startTime = Date.now();
+
+    const check = () => {
+      const text = extractResponseText(container);
+      const streaming = isStreaming(container);
+
+      if (text !== lastText) {
+        lastText = text;
+        stableSince = Date.now();
+      }
+
+      const stableDuration = Date.now() - stableSince;
+      const elapsed = Date.now() - startTime;
+      const done =
+        !streaming &&
+        text.length > 0 &&
+        (stableDuration >= STREAMING_DEBOUNCE_MS || elapsed >= maxWaitMs);
+
+      if (done) {
+        resolve();
+        return;
+      }
+
+      setTimeout(check, pollInterval);
+    };
+
+    check();
+  });
+}
+
+/**
+ * Calls the API via the background script (avoids Chrome blocking localhost from page context).
+ * @param {string} responseText
+ * @param {Array} conversation
+ * @returns {Promise<Object|null>} the analysis or null on failure
+ */
+async function fetchAnalysis(responseText, conversation = []) {
+  try {
+    const result = await chrome.runtime.sendMessage({
+      type: "analyze",
+      text: responseText,
+      conversation,
+    });
+    return result ?? null;
+  } catch (err) {
+    console.warn("[Aegis] API unavailable, using mock:", err.message);
+    return null;
+  }
+}
+
+// Mock analysis data (fallback when API unavailable)
 function getMockAnalysis() {
   return {
     riskLevel: "high", // low | medium | high
@@ -150,14 +273,56 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+function mapApiToAnalysis(api) {
+  if (!api || !api.risk) return null;
+  const level = api.risk.level || "medium";
+  const confidence = api.llm_analysis?.factual_confidence ?? 0.5;
+  return {
+    riskLevel: level,
+    label: api.risk.factors?.length
+      ? `${level.charAt(0).toUpperCase() + level.slice(1)}: ${api.risk.factors[0]}`
+      : `${level.charAt(0).toUpperCase() + level.slice(1)} confidence gap`,
+    confidence,
+    evidence: 1 - confidence,
+    missingContext: api.llm_analysis?.claims ?? [],
+    biasSummary:
+      api.llm_analysis?.bias_indicators?.join("; ") ??
+      api.llm_analysis?.summary ??
+      "No significant bias detected",
+    recalibratedText: "",
+    failureModes: [],
+  };
+}
+
+async function injectPanelForContainer(container) {
+  if (container.querySelector(".aegis-panel")) return;
+  if (container.hasAttribute("data-aegis-pending")) return;
+
+  container.setAttribute("data-aegis-pending", "true");
+
+  try {
+    await waitForStreamingComplete(container);
+    const responseText = extractResponseText(container);
+    const conversation = getConversationThread();
+
+    const apiResult = await fetchAnalysis(responseText, conversation);
+    const analysis = mapApiToAnalysis(apiResult) ?? getMockAnalysis();
+
+    const panel = createAegisPanel(analysis);
+    container.appendChild(panel);
+  } catch (err) {
+    console.warn("[Aegis] Injection failed:", err);
+    const panel = createAegisPanel(getMockAnalysis());
+    container.appendChild(panel);
+  } finally {
+    container.removeAttribute("data-aegis-pending");
+  }
+}
+
 function injectPanels() {
   const responseDivs = document.querySelectorAll("[data-message-author-role='assistant']");
   for (const container of responseDivs) {
-    if (container.querySelector(".aegis-panel")) continue;
-
-    const analysis = getMockAnalysis();
-    const panel = createAegisPanel(analysis);
-    container.appendChild(panel);
+    injectPanelForContainer(container);
   }
 }
 

@@ -4,7 +4,14 @@
   "version": "1.0.0",
   "description": "Inline AI safety analysis for ChatGPT responses",
   "permissions": ["activeTab", "storage"],
-  "host_permissions": ["https://chat.openai.com/*", "http://localhost:*/*"],
+  "host_permissions": [
+    "https://chat.openai.com/*",
+    "https://chatgpt.com/*",
+    "http://localhost:*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["https://chat.openai.com/*", "https://chatgpt.com/*"],

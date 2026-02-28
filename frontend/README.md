@@ -30,8 +30,9 @@ Or run `npm run watch` to rebuild on file changes.
 5. **Recalibrate response**: Shows a safer version of the answer below the original
 6. **What could make this wrong?**: Lists potential failure modes
 
-## Current State
+## Backend Integration
 
-- UI uses mock analysis data
-- Backend integration (POST to `/analyze`) is TODO
-- ChatGPT DOM selectors may need updates if OpenAI changes their markup
+1. Start the backend: `cd backend && uvicorn app.main:app --reload`
+2. The extension waits for ChatGPT to finish streaming before extracting the response
+3. The content script sends a message to the background service worker, which performs the fetch to `POST http://localhost:8000/analyze/text` (avoids Chrome blocking localhost from page context)
+4. Falls back to mock data if the API is unavailable
