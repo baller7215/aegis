@@ -13,7 +13,7 @@ export type AddSourceModalRef = BottomSheetModal;
 export const AddSourceModal = React.forwardRef<BottomSheetModal>(
   function AddSourceModal(_, ref) {
     const insets = useSafeAreaInsets();
-    const snapPoints = useMemo(() => ['48%'], []);
+    const snapPoints = useMemo(() => ['50%'], []);
 
     const renderBackdrop = useCallback(
       (props: React.ComponentProps<typeof BottomSheetBackdrop>) => (
@@ -29,12 +29,12 @@ export const AddSourceModal = React.forwardRef<BottomSheetModal>(
 
     const handleLinkPress = useCallback(() => {
       (ref as React.RefObject<BottomSheetModal | null>)?.current?.dismiss();
-      // TODO: Handle link action
+      /** @TODO handle link action */
     }, [ref]);
 
     const handleUploadPress = useCallback(() => {
       (ref as React.RefObject<BottomSheetModal | null>)?.current?.dismiss();
-      // TODO: Handle upload action
+      /** @TODO handle upload action */
     }, [ref]);
 
     return (

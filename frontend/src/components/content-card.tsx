@@ -9,6 +9,7 @@ type ContentCardProps = {
   description: string;
   score?: number;
   backgroundColor: string;
+  onPress?: () => void;
 };
 
 const TAG_ICONS: Record<CardTag, keyof typeof Ionicons.glyphMap> = {
@@ -25,11 +26,13 @@ export function ContentCard({
   description,
   score,
   backgroundColor,
+  onPress,
 }: ContentCardProps) {
   const IconComponent = TAG_ICONS[tag];
 
   return (
     <Pressable
+      onPress={onPress}
       className="rounded-2xl p-4 flex-1 min-w-0 active:opacity-95"
       style={{ backgroundColor, minHeight: 140 }}
     >

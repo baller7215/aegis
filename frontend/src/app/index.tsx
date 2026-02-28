@@ -1,4 +1,5 @@
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { router } from 'expo-router';
 import { useRef } from 'react';
 import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
@@ -67,7 +68,6 @@ export default function HomeScreen() {
           {MOCK_CARDS.map((card, index) => (
             <View
               key={index}
-              // full width if true, otherwise 47%
               style={{ width: card.fullWidth ? '100%' : '47%' }}
             >
               <ContentCard
@@ -76,6 +76,16 @@ export default function HomeScreen() {
                 description={card.description}
                 score={card.score}
                 backgroundColor={card.backgroundColor}
+                onPress={() =>
+                  router.push({
+                    pathname: '/review-glimpse',
+                    params: {
+                      title: card.title,
+                      tag: card.tag,
+                      source: 'Instagram Analysis',
+                    },
+                  })
+                }
               />
             </View>
           ))}
