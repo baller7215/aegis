@@ -3,7 +3,11 @@ import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-export function Header() {
+type HeaderProps = {
+  onAddPress?: () => void;
+};
+
+export function Header({ onAddPress }: HeaderProps) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -25,7 +29,7 @@ export function Header() {
       </View>
       <Pressable
         className="w-10 h-10 rounded-full bg-[#1A1A1A] items-center justify-center active:opacity-80"
-        onPress={() => {}}
+        onPress={onAddPress}
       >
         <Ionicons name="add" size={24} color="white" />
       </Pressable>

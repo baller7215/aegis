@@ -12,10 +12,12 @@
   },
   "dependencies": {
     "@expo-google-fonts/space-grotesk": "^0.4.1",
+    "@gorhom/bottom-sheet": "^5.2.8",
     "@react-navigation/bottom-tabs": "^7.7.3",
     "@react-navigation/elements": "^2.8.1",
     "@react-navigation/native": "^7.1.28",
     "expo": "~55.0.4",
+    "expo-blur": "^55.0.8",
     "expo-constants": "~55.0.7",
     "expo-device": "~55.0.9",
     "expo-font": "~55.0.4",

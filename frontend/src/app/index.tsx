@@ -1,7 +1,9 @@
+import type { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { useRef } from 'react';
 import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
-import { BottomNav } from '@/components/bottom-nav';
+import { AddSourceModal } from '@/components/add-source-modal';
 import { CategoryFilters } from '@/components/category-filters';
 import { ContentCard } from '@/components/content-card';
 import { Header } from '@/components/header';
@@ -40,7 +42,7 @@ const MOCK_CARDS = [
   },
   {
     tag: 'SAFE' as const,
-    title: 'Job Posting',
+    title: 'Job Posting here',
     description: 'Verified company profile...',
     backgroundColor: '#F5F5F5',
     fullWidth: false,
@@ -49,10 +51,11 @@ const MOCK_CARDS = [
 
 export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const addSourceRef = useRef<BottomSheetModal>(null);
 
   return (
     <View className="flex-1 bg-[#F9F7F2]">
-      <Header />
+      <Header onAddPress={() => addSourceRef.current?.present()} />
       <CategoryFilters selected={selectedCategory} onSelect={setSelectedCategory} />
 
       <ScrollView
@@ -79,8 +82,7 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
-      {/* don't really need rn */}
-      {/* <BottomNav /> */}
+      <AddSourceModal ref={addSourceRef} />
     </View>
   );
 }
