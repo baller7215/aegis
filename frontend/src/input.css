@@ -94,14 +94,26 @@
   .aegis-meter-row:nth-child(2) .aegis-meter-bar {
     animation-delay: 0.3s;
   }
-  .aegis-meter-confidence .aegis-meter-bar {
-    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  .aegis-meter-bar--low {
+    background: linear-gradient(90deg, #dc2626, #f87171) !important;
   }
-  .aegis-meter-evidence .aegis-meter-bar {
-    background: linear-gradient(90deg, #10b981, #34d399);
+  .aegis-meter-bar--medium {
+    background: linear-gradient(90deg, #d97706, #fbbf24) !important;
+  }
+  .aegis-meter-bar--high {
+    background: linear-gradient(90deg, #059669, #34d399) !important;
   }
   .aegis-meter-value {
-    @apply w-8 text-xs font-medium text-gray-500 dark:text-gray-400 text-right;
+    @apply w-8 text-xs font-medium text-right;
+  }
+  .aegis-meter-value--low {
+    @apply text-red-600 dark:text-red-400;
+  }
+  .aegis-meter-value--medium {
+    @apply text-amber-600 dark:text-amber-400;
+  }
+  .aegis-meter-value--high {
+    @apply text-emerald-600 dark:text-emerald-400;
   }
 
   /* Context list */

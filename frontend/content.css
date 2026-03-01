@@ -921,28 +921,59 @@ video {
   animation-delay: 0.3s;
 }
 
-.aegis-meter-confidence .aegis-meter-bar {
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+.aegis-meter-bar--low {
+  background: linear-gradient(90deg, #dc2626, #f87171) !important;
 }
 
-.aegis-meter-evidence .aegis-meter-bar {
-  background: linear-gradient(90deg, #10b981, #34d399);
+.aegis-meter-bar--medium {
+  background: linear-gradient(90deg, #d97706, #fbbf24) !important;
+}
+
+.aegis-meter-bar--high {
+  background: linear-gradient(90deg, #059669, #34d399) !important;
 }
 
 .aegis-meter-value {
-  width: 2rem;
+  width: 3rem;
   text-align: right;
   font-size: 0.75rem;
   line-height: 1rem;
   font-weight: 500;
+}
+
+.aegis-meter-value--low {
   --tw-text-opacity: 1;
-  color: rgb(107 114 128 / var(--tw-text-opacity, 1));
+  color: rgb(220 38 38 / var(--tw-text-opacity, 1));
 }
 
 @media (prefers-color-scheme: dark) {
-  .aegis-meter-value {
+  .aegis-meter-value--low {
     --tw-text-opacity: 1;
-    color: rgb(156 163 175 / var(--tw-text-opacity, 1));
+    color: rgb(248 113 113 / var(--tw-text-opacity, 1));
+  }
+}
+
+.aegis-meter-value--medium {
+  --tw-text-opacity: 1;
+  color: rgb(217 119 6 / var(--tw-text-opacity, 1));
+}
+
+@media (prefers-color-scheme: dark) {
+  .aegis-meter-value--medium {
+    --tw-text-opacity: 1;
+    color: rgb(251 191 36 / var(--tw-text-opacity, 1));
+  }
+}
+
+.aegis-meter-value--high {
+  --tw-text-opacity: 1;
+  color: rgb(5 150 105 / var(--tw-text-opacity, 1));
+}
+
+@media (prefers-color-scheme: dark) {
+  .aegis-meter-value--high {
+    --tw-text-opacity: 1;
+    color: rgb(52 211 153 / var(--tw-text-opacity, 1));
   }
 }
 
@@ -1621,9 +1652,19 @@ video {
   line-height: 1.625;
 }
 
+.text-amber-600 {
+  --tw-text-opacity: 1;
+  color: rgb(217 119 6 / var(--tw-text-opacity, 1));
+}
+
 .text-amber-800 {
   --tw-text-opacity: 1;
   color: rgb(146 64 14 / var(--tw-text-opacity, 1));
+}
+
+.text-emerald-600 {
+  --tw-text-opacity: 1;
+  color: rgb(5 150 105 / var(--tw-text-opacity, 1));
 }
 
 .text-emerald-900 {
@@ -1654,6 +1695,11 @@ video {
 .text-green-800 {
   --tw-text-opacity: 1;
   color: rgb(22 101 52 / var(--tw-text-opacity, 1));
+}
+
+.text-red-600 {
+  --tw-text-opacity: 1;
+  color: rgb(220 38 38 / var(--tw-text-opacity, 1));
 }
 
 .text-red-800 {

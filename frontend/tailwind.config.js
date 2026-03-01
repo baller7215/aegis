@@ -7,6 +7,12 @@ module.exports = {
     "aegis-risk-high",
     "aegis-meter-confidence",
     "aegis-meter-evidence",
+    "aegis-meter-value--low",
+    "aegis-meter-value--medium",
+    "aegis-meter-value--high",
+    "aegis-meter-bar--low",
+    "aegis-meter-bar--medium",
+    "aegis-meter-bar--high",
   ],
   darkMode: "media",
   theme: {

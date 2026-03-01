@@ -6,6 +6,14 @@
 const AEGIS_ATTR = "data-aegis-injected";
 const STREAMING_DEBOUNCE_MS = 800;
 
+/** Returns low | medium | high for value 0–1 (higher = better) */
+function meterColorClass(value) {
+  const pct = (value ?? 0) * 100;
+  if (pct >= 67) return "high";
+  if (pct >= 34) return "medium";
+  return "low";
+}
+
 /**
  * extracts the response text from the container by checking the following:
  * - if the container has a markdown class
@@ -186,16 +194,16 @@ function createAegisPanel(analysis) {
         <div class="aegis-meter-row">
           <span class="aegis-meter-label">Confidence</span>
           <div class="aegis-meter-bar-wrap">
-            <div class="aegis-meter-bar aegis-meter-confidence" style="width: ${analysis.confidence * 100}%"></div>
+            <div class="aegis-meter-bar aegis-meter-confidence aegis-meter-bar--${meterColorClass(analysis.confidence)}" style="width: ${analysis.confidence * 100}%"></div>
           </div>
-          <span class="aegis-meter-value">${Math.round(analysis.confidence * 100)}%</span>
+          <span class="aegis-meter-value aegis-meter-value--${meterColorClass(analysis.confidence)}">${Math.round(analysis.confidence * 100)}%</span>
         </div>
         <div class="aegis-meter-row">
           <span class="aegis-meter-label">Evidence</span>
           <div class="aegis-meter-bar-wrap">
-            <div class="aegis-meter-bar aegis-meter-evidence" style="width: ${analysis.evidence * 100}%"></div>
+            <div class="aegis-meter-bar aegis-meter-evidence aegis-meter-bar--${meterColorClass(analysis.evidence)}" style="width: ${analysis.evidence * 100}%"></div>
           </div>
-          <span class="aegis-meter-value">${Math.round(analysis.evidence * 100)}%</span>
+          <span class="aegis-meter-value aegis-meter-value--${meterColorClass(analysis.evidence)}">${Math.round(analysis.evidence * 100)}%</span>
         </div>
       </div>
     </div>
