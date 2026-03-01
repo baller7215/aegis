@@ -116,6 +116,56 @@ function waitForStreamingComplete(container) {
   });
 }
 
+const CACHE_KEY_PREFIX = "aegis_";
+const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+/**
+ * hash response text for cache key (SHA-256 hex)
+ * @param {string} text 
+ * @returns {Promise<string>} the hash of the text
+ */
+async function hashForCache(text) {
+  const buf = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest("SHA-256", buf);
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+/**
+ * load cached analysis if valid and not expired
+ * @param {string} cacheKey 
+ * @returns {Promise<Object|null>} the cached analysis or null if not found or expired
+ */
+async function getCachedAnalysis(cacheKey) {
+  try {
+    const { [CACHE_KEY_PREFIX + cacheKey]: entry } = await chrome.storage.local.get(
+      CACHE_KEY_PREFIX + cacheKey
+    );
+    if (!entry?.apiResult) return null;
+    if (Date.now() - (entry.ts ?? 0) > CACHE_TTL_MS) return null;
+    return entry.apiResult;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * save analysis to local cache
+ * @param {string} cacheKey 
+ * @param {Object} apiResult 
+ * @returns {Promise<void>} resolves when the analysis is saved
+ */
+async function setCachedAnalysis(cacheKey, apiResult) {
+  try {
+    await chrome.storage.local.set({
+      [CACHE_KEY_PREFIX + cacheKey]: { apiResult, ts: Date.now() },
+    });
+  } catch (err) {
+    console.warn("[Aegis] Cache save failed:", err.message);
+  }
+}
+
 /**
  * Calls the API via the background script (avoids Chrome blocking localhost from page context).
  * @param {string} responseText
@@ -371,10 +421,22 @@ async function injectPanelForContainer(container) {
     const responseText = extractResponseText(container);
     const conversation = getConversationThread();
 
+    const cacheKey = await hashForCache(responseText);
+    const cached = await getCachedAnalysis(cacheKey);
+    if (cached) {
+      const analysis = mapApiToAnalysis(cached) ?? getMockAnalysis();
+      analysis.originalText = responseText;
+      const panel = createAegisPanel(analysis);
+      container.appendChild(panel);
+      return;
+    }
+
     loadingPanel = createLoadingPanel();
     container.appendChild(loadingPanel);
 
     const apiResult = await fetchAnalysis(responseText, conversation);
+    if (apiResult) await setCachedAnalysis(cacheKey, apiResult);
+
     const analysis = mapApiToAnalysis(apiResult) ?? getMockAnalysis();
     analysis.originalText = responseText;
 
