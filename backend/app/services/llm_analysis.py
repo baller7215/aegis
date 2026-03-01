@@ -18,7 +18,6 @@ async def run_llm_analysis(text: str) -> LLMResults:
         }
 
     result = await extract_structured_signals(text)
-    print("result", result)
     return {
         "assumptions": result.assumptions,
         "missing_context": result.missing_context,

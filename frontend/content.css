@@ -934,7 +934,7 @@ video {
 }
 
 .aegis-meter-value {
-  width: 3rem;
+  width: 2rem;
   text-align: right;
   font-size: 0.75rem;
   line-height: 1rem;
@@ -1019,6 +1019,28 @@ video {
 
 .aegis-context-list li {
   margin-bottom: 0.5rem;
+}
+
+.aegis-assumptions-section {
+  margin-bottom: 1.25rem;
+}
+
+@keyframes aegis-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.aegis-assumptions-section {
+  animation: aegis-fade-up 0.35s ease forwards;
+  opacity: 0;
+  animation-delay: 0.15s;
 }
 
 /* Bias summary - softer, more informative tone */
@@ -1242,6 +1264,38 @@ video {
   .aegis-recalibrated-title {
     --tw-text-opacity: 1;
     color: rgb(74 222 128 / var(--tw-text-opacity, 1));
+  }
+}
+
+.aegis-recalibrated--loading {
+  font-style: italic;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity, 1));
+}
+
+@media (prefers-color-scheme: dark) {
+  .aegis-recalibrated--loading {
+    --tw-text-opacity: 1;
+    color: rgb(156 163 175 / var(--tw-text-opacity, 1));
+  }
+}
+
+.aegis-recalibrated--error {
+  --tw-border-opacity: 1;
+  border-color: rgb(254 202 202 / var(--tw-border-opacity, 1));
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1));
+  --tw-text-opacity: 1;
+  color: rgb(185 28 28 / var(--tw-text-opacity, 1));
+}
+
+@media (prefers-color-scheme: dark) {
+  .aegis-recalibrated--error {
+    --tw-border-opacity: 1;
+    border-color: rgb(153 27 27 / var(--tw-border-opacity, 1));
+    background-color: rgb(69 10 10 / 0.4);
+    --tw-text-opacity: 1;
+    color: rgb(252 165 165 / var(--tw-text-opacity, 1));
   }
 }
 
@@ -1644,6 +1698,10 @@ video {
   font-weight: 600;
 }
 
+.italic {
+  font-style: italic;
+}
+
 .leading-normal {
   line-height: 1.5;
 }
@@ -1702,6 +1760,11 @@ video {
   color: rgb(220 38 38 / var(--tw-text-opacity, 1));
 }
 
+.text-red-700 {
+  --tw-text-opacity: 1;
+  color: rgb(185 28 28 / var(--tw-text-opacity, 1));
+}
+
 .text-red-800 {
   --tw-text-opacity: 1;
   color: rgb(153 27 27 / var(--tw-text-opacity, 1));
@@ -1739,6 +1802,7 @@ video {
   .aegis-chevron,
   .aegis-meter-section,
   .aegis-context-section,
+  .aegis-assumptions-section,
   .aegis-bias-section,
   .aegis-actions,
   .aegis-meter-bar {
@@ -1747,6 +1811,7 @@ video {
 
   .aegis-meter-section,
   .aegis-context-section,
+  .aegis-assumptions-section,
   .aegis-bias-section,
   .aegis-actions {
     opacity: 1 !important;
@@ -1789,6 +1854,11 @@ video {
   .dark\:border-green-800 {
     --tw-border-opacity: 1;
     border-color: rgb(22 101 52 / var(--tw-border-opacity, 1));
+  }
+
+  .dark\:border-red-800 {
+    --tw-border-opacity: 1;
+    border-color: rgb(153 27 27 / var(--tw-border-opacity, 1));
   }
 
   .dark\:border-red-900 {

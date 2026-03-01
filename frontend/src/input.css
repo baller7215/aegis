@@ -127,6 +127,10 @@
   .aegis-context-list li {
     @apply mb-2;
   }
+  .aegis-assumptions-section {
+    @apply mb-5 opacity-0 animate-aegis-fade-up;
+    animation-delay: 0.15s;
+  }
 
   /* Bias summary - softer, more informative tone */
   .aegis-bias-section {
@@ -169,6 +173,12 @@
   .aegis-recalibrated-title {
     @apply font-semibold mb-2 text-[13px] text-green-700 dark:text-green-400;
   }
+  .aegis-recalibrated--loading {
+    @apply italic text-gray-500 dark:text-gray-400;
+  }
+  .aegis-recalibrated--error {
+    @apply bg-red-50 dark:bg-red-950/40 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300;
+  }
 
   /* Failures block */
   .aegis-failures {
@@ -192,6 +202,7 @@
   .aegis-chevron,
   .aegis-meter-section,
   .aegis-context-section,
+  .aegis-assumptions-section,
   .aegis-bias-section,
   .aegis-actions,
   .aegis-meter-bar {
@@ -199,6 +210,7 @@
   }
   .aegis-meter-section,
   .aegis-context-section,
+  .aegis-assumptions-section,
   .aegis-bias-section,
   .aegis-actions {
     opacity: 1 !important;

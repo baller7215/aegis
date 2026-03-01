@@ -143,13 +143,18 @@ function getMockAnalysis() {
     label: "High confidence gap",
     confidence: 0.85,
     evidence: 0.45,
+    domain: "general",
+    decision_delegation_detected: false,
     missingContext: [
       "Response assumes current data; may be outdated",
       "No citation of sources or studies",
       "Geographic scope unclear"
     ],
+    assumptions: [
+      "General patterns apply to individual cases",
+      "Training data is representative and up to date"
+    ],
     biasSummary: "Likely confirmation bias / one-sided framing",
-    recalibratedText: "Here's a more cautious version: The answer above reflects general patterns, but I'm not certain about the specific claims. Key assumptions: (1) the data I was trained on may be incomplete; (2) individual cases can differ; (3) I don't have access to current, verified sources. I'd recommend fact-checking any specific numbers or claims against authoritative sources.",
     failureModes: [
       "Training data cutoff may omit recent developments",
       "Overgeneralization from limited examples",
@@ -210,9 +215,17 @@ function createAegisPanel(analysis) {
     <div class="aegis-context-section">
       <div class="aegis-section-title">Missing context</div>
       <ul class="aegis-context-list">
-        ${analysis.missingContext.map(c => `<li>${escapeHtml(c)}</li>`).join("")}
+        ${(analysis.missingContext ?? []).map(c => `<li>${escapeHtml(c)}</li>`).join("")}
       </ul>
     </div>
+    ${(analysis.assumptions ?? []).length ? `
+    <div class="aegis-assumptions-section">
+      <div class="aegis-section-title">Assumptions</div>
+      <ul class="aegis-context-list">
+        ${(analysis.assumptions ?? []).map(a => `<li>${escapeHtml(a)}</li>`).join("")}
+      </ul>
+    </div>
+    ` : ""}
     <div class="aegis-bias-section">
       ${escapeHtml(analysis.biasSummary)}
     </div>
@@ -235,17 +248,37 @@ function createAegisPanel(analysis) {
   });
 
   // Recalibrate
-  card.querySelector('[data-action="recalibrate"]').addEventListener("click", (e) => {
+  card.querySelector('[data-action="recalibrate"]').addEventListener("click", async (e) => {
     e.stopPropagation();
     const wrap = card.querySelector(".aegis-recalibrated-wrap");
+    const btn = card.querySelector('[data-action="recalibrate"]');
     if (wrap.hidden) {
       wrap.hidden = false;
-      wrap.innerHTML = `
+      wrap.innerHTML = `<div class="aegis-recalibrated aegis-recalibrated--loading">Recalibrating…</div>`;
+      btn.disabled = true;
+      const result = await new Promise((resolve) => {
+        chrome.runtime.sendMessage(
+          {
+            type: "recalibrate",
+            text: analysis.originalText ?? "",
+            confidence: analysis.confidence ?? 0.5,
+            evidence: analysis.evidence ?? 0.5,
+            domain: analysis.domain ?? "general",
+            decision_delegation_detected: analysis.decision_delegation_detected ?? false,
+          },
+          resolve
+        );
+      });
+      btn.disabled = false;
+      const text = result?.recalibratedText ?? "";
+      wrap.innerHTML = text
+        ? `
         <div class="aegis-recalibrated">
           <div class="aegis-recalibrated-title">Safer version</div>
-          ${escapeHtml(analysis.recalibratedText)}
+          ${escapeHtml(text)}
         </div>
-      `;
+      `
+        : `<div class="aegis-recalibrated aegis-recalibrated--error">Recalibration unavailable. Check backend.</div>`;
     } else {
       wrap.hidden = true;
       wrap.innerHTML = "";
@@ -297,12 +330,14 @@ function mapApiToAnalysis(api) {
       : `${level.charAt(0).toUpperCase() + level.slice(1)} confidence gap`,
     confidence,
     evidence,
+    domain: api.heuristics?.domain ?? "general",
+    decision_delegation_detected: api.llm_analysis?.decision_delegation_detected ?? false,
     missingContext: api.llm_analysis?.missing_context ?? [],
+    assumptions: api.llm_analysis?.assumptions ?? [],
     biasSummary:
       api.llm_analysis?.bias_explanation ??
       api.llm_analysis?.bias_type ??
       "No significant bias detected",
-    recalibratedText: "",
     failureModes: api.llm_analysis?.failure_modes ?? [],
   };
 }
@@ -320,6 +355,7 @@ async function injectPanelForContainer(container) {
 
     const apiResult = await fetchAnalysis(responseText, conversation);
     const analysis = mapApiToAnalysis(apiResult) ?? getMockAnalysis();
+    analysis.originalText = responseText;
 
     const panel = createAegisPanel(analysis);
     container.appendChild(panel);
