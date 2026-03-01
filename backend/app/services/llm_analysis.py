@@ -1,26 +1,30 @@
-"""llm-based structured analysis of text"""
+"""LLM-based structured analysis of text"""
 
 from app.models.analysis_models import LLMResults
+from app.services.structured_extraction import extract_structured_signals
 
 
 async def run_llm_analysis(text: str) -> LLMResults:
-    """Run LLM structured analysis on text."""
-    # @TODO: integrate with OpenAI/Anthropic/etc for real analysis
-    # placeholder returns mock structure until LLM is wired up
+    """run structured extraction via 4o-mini and return as LLMResults"""
     if not text:
         return {
-            "claims": [],
-            "bias_indicators": [],
-            "factual_confidence": 0,
-            "summary": "",
+            "assumptions": [],
+            "missing_context": [],
+            "bias_type": None,
+            "bias_explanation": None,
+            "failure_modes": [],
+            "decision_delegation_detected": False,
+            "context_sensitivity": {},
         }
 
-    # truncate for placeholder (real LLM would process full text)
-    preview = text[:500] if len(text) > 500 else text
-
+    result = await extract_structured_signals(text)
+    print("result", result)
     return {
-        "claims": [],
-        "bias_indicators": [],
-        "factual_confidence": 0,
-        "summary": preview + ("..." if len(text) > 500 else ""),
+        "assumptions": result.assumptions,
+        "missing_context": result.missing_context,
+        "bias_type": result.bias_type,
+        "bias_explanation": result.bias_explanation,
+        "failure_modes": result.failure_modes,
+        "decision_delegation_detected": result.decision_delegation_detected,
+        "context_sensitivity": result.context_sensitivity,
     }

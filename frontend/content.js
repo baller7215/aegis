@@ -289,13 +289,13 @@ function mapApiToAnalysis(api) {
       : `${level.charAt(0).toUpperCase() + level.slice(1)} confidence gap`,
     confidence,
     evidence,
-    missingContext: api.llm_analysis?.claims ?? [],
+    missingContext: api.llm_analysis?.missing_context ?? [],
     biasSummary:
-      api.llm_analysis?.bias_indicators?.join("; ") ??
-      api.llm_analysis?.summary ??
+      api.llm_analysis?.bias_explanation ??
+      api.llm_analysis?.bias_type ??
       "No significant bias detected",
     recalibratedText: "",
-    failureModes: [],
+    failureModes: api.llm_analysis?.failure_modes ?? [],
   };
 }
 

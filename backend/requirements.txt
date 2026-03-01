@@ -1,5 +1,7 @@
 fastapi
 uvicorn
 pydantic
-httpx
+httpx>=0.25.0,<0.28.0
 beautifulsoup4
+openai>=1.0.0
+python-dotenv
