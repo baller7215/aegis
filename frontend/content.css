@@ -787,6 +787,53 @@ video {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+.aegis-row--loading {
+  cursor: default;
+}
+
+.aegis-row--loading:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+}
+
+@media (prefers-color-scheme: dark) {
+  .aegis-row--loading:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(47 47 47 / var(--tw-bg-opacity, 1));
+  }
+}
+
+.aegis-row--loading:active {
+  transform: none;
+}
+
+.aegis-spinner {
+  margin-right: 0.5rem;
+  margin-top: -0.125rem;
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity, 1));
+}
+
+@media (prefers-color-scheme: dark) {
+  .aegis-spinner {
+    --tw-text-opacity: 1;
+    color: rgb(156 163 175 / var(--tw-text-opacity, 1));
+  }
+}
+
+.aegis-spinner {
+  animation: aegis-spin 0.8s linear infinite;
+}
+
+@keyframes aegis-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Expanded card */
 
 @keyframes aegis-expand {
@@ -1381,6 +1428,10 @@ video {
   margin-bottom: 0.75rem;
 }
 
+.-mt-0\.5 {
+  margin-top: -0.125rem;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
 }
@@ -1397,6 +1448,10 @@ video {
   margin-bottom: 1.5rem;
 }
 
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
 .mt-3 {
   margin-top: 0.75rem;
 }
@@ -1407,6 +1462,10 @@ video {
 
 .block {
   display: block;
+}
+
+.inline-block {
+  display: inline-block;
 }
 
 .inline {
@@ -1810,7 +1869,8 @@ video {
   .aegis-assumptions-section,
   .aegis-bias-section,
   .aegis-actions,
-  .aegis-meter-bar {
+  .aegis-meter-bar,
+  .aegis-spinner {
     animation: none !important;
   }
 

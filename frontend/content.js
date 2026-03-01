@@ -172,6 +172,23 @@ const chevronIcon = `<svg class="aegis-chevron" viewBox="0 0 24 24" fill="none" 
   <path d="M6 9l6 6 6-6"/>
 </svg>`;
 
+const spinnerIcon = `<svg class="aegis-spinner" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="12"/>
+</svg>`;
+
+function createLoadingPanel() {
+  const panel = document.createElement("div");
+  panel.className = "aegis-panel aegis-panel--loading";
+  panel.setAttribute("data-aegis-loading", "true");
+  panel.innerHTML = `
+    <div class="aegis-row aegis-row--loading">
+      <span class="aegis-shield-wrap">${shieldIcon}</span>
+      <span class="aegis-label">${spinnerIcon} Analyzing response…</span>
+    </div>
+  `;
+  return panel;
+}
+
 function createAegisPanel(analysis) {
   const riskClass = `aegis-risk-${analysis.riskLevel}`;
   const panel = document.createElement("div");
@@ -348,19 +365,25 @@ async function injectPanelForContainer(container) {
 
   container.setAttribute("data-aegis-pending", "true");
 
+  let loadingPanel = null;
   try {
     await waitForStreamingComplete(container);
     const responseText = extractResponseText(container);
     const conversation = getConversationThread();
 
+    loadingPanel = createLoadingPanel();
+    container.appendChild(loadingPanel);
+
     const apiResult = await fetchAnalysis(responseText, conversation);
     const analysis = mapApiToAnalysis(apiResult) ?? getMockAnalysis();
     analysis.originalText = responseText;
 
+    loadingPanel.remove();
     const panel = createAegisPanel(analysis);
     container.appendChild(panel);
   } catch (err) {
     console.warn("[Aegis] Injection failed:", err);
+    if (loadingPanel?.parentNode) loadingPanel.remove();
     const panel = createAegisPanel(getMockAnalysis());
     container.appendChild(panel);
   } finally {
