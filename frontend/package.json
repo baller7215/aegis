@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "tailwindcss -i ./src/input.css -o ./content.css",
+    "build": "tailwindcss -i ./src/input.css -o ./content.css && node scripts/inject-env.js",
     "watch": "tailwindcss -i ./src/input.css -o ./content.css --watch"
   },
   "devDependencies": {

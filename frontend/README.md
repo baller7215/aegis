@@ -2,24 +2,29 @@
 
 Inline AI safety analysis for ChatGPT. After ChatGPT generates a response, Aegis injects a compact panel below it with risk assessment and structured analysis.
 
-## Build (Tailwind CSS)
+## Build
 
-Styles use Tailwind. Build before loading the extension:
+1. Copy `.env.example` to `.env` and set your API URL:
+   ```
+   API_BASE_URL=https://your-app.up.railway.app
+   ```
+   For local dev use `API_BASE_URL=http://localhost:8000`
 
-```bash
-cd frontend
-npm install
-npm run build
-```
+2. Build (Tailwind + inject API URL into dist):
+   ```bash
+   cd frontend
+   npm install
+   npm run build
+   ```
 
-Or run `npm run watch` to rebuild on file changes.
+3. Or run `npm run watch` to rebuild on file changes (only Tailwind; re-run `npm run build` to refresh the API URL).
 
 ## Load in Chrome
 
 1. Open `chrome://extensions` in Chrome
 2. Enable **Developer mode** (toggle in top-right)
 3. Click **Load unpacked**
-4. Select the `frontend` directory
+4. Select the `frontend/dist` directory (the built extension)
 
 ## Usage
 
