@@ -14,7 +14,7 @@ async def analyze(request: AnalyzeRequest):
 
 @router.post("/analyze/text")
 async def analyze_text(request: AnalyzeTextRequest):
-    result = await run_analysis_from_text(request.text)
+    result = await run_analysis_from_text(request.text, request.numberOfSourcesUsed)
     return result
 
 

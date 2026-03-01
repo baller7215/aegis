@@ -23,8 +23,11 @@ function meterColorClass(value) {
  * @param {HTMLElement} container 
  * @returns {string} the response text
  */
-function extractResponseText(container) {
+function extractResponseText(container, findSources = false) {
   const markdown = container.querySelector(".markdown, .prose, [class*='markdown']");
+  if (findSources) {
+    return [(markdown || container).innerText?.trim() || "", container.querySelectorAll('[data-testid="webpage-citation-pill"]').length];
+  }
   return (markdown || container).innerText?.trim() || "";
 }
 
@@ -64,7 +67,7 @@ function isStreaming(container) {
   if (!article) return false;
   if (article.querySelector("[data-writing-block]")) return true;
   if (article.classList.contains("has-data-writing-block")) return true;
-  const stopBtn = document.querySelector("[data-testid='stop-generating-button']");
+  const stopBtn = document.querySelector("[data-testid='stop-button']");
   if (stopBtn && article.contains(stopBtn.closest("article"))) return true;
   return false;
 }
@@ -172,12 +175,13 @@ async function setCachedAnalysis(cacheKey, apiResult) {
  * @param {Array} conversation
  * @returns {Promise<Object|null>} the analysis or null on failure
  */
-async function fetchAnalysis(responseText, conversation = []) {
+async function fetchAnalysis(responseText, conversation = [], numberOfSourcesUsed = 0) {
   try {
     const result = await chrome.runtime.sendMessage({
       type: "analyze",
       text: responseText,
       conversation,
+      numberOfSourcesUsed,
     });
     return result ?? null;
   } catch (err) {
@@ -302,6 +306,7 @@ function createAegisPanel(analysis) {
     </div>
     <div class="aegis-recalibrated-wrap" hidden></div>
     <div class="aegis-failures-wrap" hidden></div>
+    <p class="aegis-disclaimer">Aegis evaluates reasoning patterns, not factual accuracy.</p>
   `;
 
   panel.appendChild(row);
@@ -418,7 +423,8 @@ async function injectPanelForContainer(container) {
   let loadingPanel = null;
   try {
     await waitForStreamingComplete(container);
-    const responseText = extractResponseText(container);
+    const [responseText, numberOfSourcesUsed] = extractResponseText(container, true);
+    console.log('numberOfSourcesUsed:', numberOfSourcesUsed);
     const conversation = getConversationThread();
 
     const cacheKey = await hashForCache(responseText);
@@ -434,7 +440,7 @@ async function injectPanelForContainer(container) {
     loadingPanel = createLoadingPanel();
     container.appendChild(loadingPanel);
 
-    const apiResult = await fetchAnalysis(responseText, conversation);
+    const apiResult = await fetchAnalysis(responseText, conversation, numberOfSourcesUsed);
     if (apiResult) await setCachedAnalysis(cacheKey, apiResult);
 
     const analysis = mapApiToAnalysis(apiResult) ?? getMockAnalysis();
@@ -454,9 +460,13 @@ async function injectPanelForContainer(container) {
 }
 
 function injectPanels() {
-  const responseDivs = document.querySelectorAll("[data-message-author-role='assistant']");
-  for (const container of responseDivs) {
-    injectPanelForContainer(container);
+  // One panel per article (turn); avoid duplicate injection for citation/source blocks
+  const articles = document.querySelectorAll("article[data-turn-id]");
+  for (const article of articles) {
+    const assistant = article.querySelector("[data-message-author-role='assistant']");
+    if (assistant) {
+      injectPanelForContainer(assistant);
+    }
   }
 }
 

@@ -63,7 +63,7 @@ DOMAIN_KEYWORDS = {
 }
 
 
-def run_heuristics(text: str) -> HeuristicResults:
+def run_heuristics(text: str, numberOfSourcesUsed: int = 0) -> HeuristicResults:
     """
     Runs heuristic checks on extracted text
     @param {string} text - the text to analyze
@@ -92,13 +92,24 @@ def run_heuristics(text: str) -> HeuristicResults:
     confidence_score = 0.5 + 0.3 * confidence_raw
     confidence_score = min(max(confidence_score, 0.0), 1.0)
 
-    # evidence score calculation: presence of evidence markers
-    evidence_count = 0
-    for pattern in EVIDENCE_PATTERNS:
-        evidence_count += len(re.findall(pattern, text_lower, re.IGNORECASE))
-    # normalize: cap at ~10 hits for full score
-    evidence_score = min(evidence_count / 5.0, 1.0)
+    print(f"confidence_raw: {confidence_raw}")
+    print(f"confidence_score: {confidence_score}")
+    print(f"numberOfSourcesUsed: {numberOfSourcesUsed}")
+
+    # use number of sources used if not 0
+    if numberOfSourcesUsed > 0:
+        evidence_score = numberOfSourcesUsed / confidence_raw
+        evidence_score = min(evidence_score, 1.0)
+    else:
+        # evidence score calculation: presence of evidence markers
+        evidence_count = 0
+        for pattern in EVIDENCE_PATTERNS:
+            evidence_count += len(re.findall(pattern, text_lower, re.IGNORECASE))
+        # normalize: cap at ~10 hits for full score
+        evidence_score = min(evidence_count / 5.0, 1.0)
     evidence_score = round(evidence_score, 2)
+
+    print(f"evidence_score: {evidence_score}")
 
     # domain detection: keyword classification
     domain_scores: dict[str, int] = {}

@@ -212,6 +212,11 @@
   .aegis-failures-list li {
     @apply mb-1;
   }
+
+  /* Subtle boundary disclaimer */
+  .aegis-disclaimer {
+    @apply mt-4 pt-3 border-t border-gray-100 dark:border-[#333] text-[11px] text-gray-400 dark:text-gray-500 leading-snug opacity-60;
+  }
 }
 
 /* Respect reduced motion preference */
