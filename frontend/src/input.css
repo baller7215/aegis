@@ -29,6 +29,9 @@
   .aegis-row:active {
     transform: scale(0.995);
   }
+  .aegis-row.expanded {
+    @apply rounded-b-none;
+  }
 
   .aegis-shield {
     @apply shrink-0 w-5 h-5 text-gray-600 dark:text-gray-300;

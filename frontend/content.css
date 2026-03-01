@@ -670,6 +670,11 @@ video {
   transform: scale(0.995);
 }
 
+.aegis-row.expanded {
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
 .aegis-shield {
   height: 1.25rem;
   width: 1.25rem;
