@@ -2,7 +2,7 @@
 
 from app.models.analysis_models import HeuristicResults, LLMResults, RiskResults
 
-
+# TODO: hardcoded rn so make more dynamic w transformers/llms
 def compute_risk(
     heuristic_results: HeuristicResults,
     llm_results: LLMResults,
@@ -11,25 +11,28 @@ def compute_risk(
     score = 0.0
     factors: list[str] = []
 
-    # heuristic contributions
-    sens = heuristic_results.get("sensational_word_count", 0)
-    if sens > 0:
-        score += min(sens * 0.1, 0.3)
-        factors.append(f"high sensational language ({sens} terms)")
+    # confidence vs evidence gap (primary signal)
+    confidence = heuristic_results.get(
+        "confidence_score",
+        llm_results.get("factual_confidence", 0.5),
+    )
+    evidence = heuristic_results.get("evidence_score", 0.5)
+    gap = confidence - evidence
+    if gap > 0.3:
+        score += min(gap * 1.5, 0.6)
+        factors.append("high confidence gap (low evidence relative to certainty)")
+    elif gap > 0.15:
+        score += 0.2
+        factors.append("moderate confidence gap")
 
-    all_caps = heuristic_results.get("all_caps_ratio", 0)
-    if all_caps > 0.05:
+    domain = heuristic_results.get("domain", "general")
+    if domain in ("medical", "legal", "financial") and gap > 0.2:
         score += 0.15
-        factors.append("excessive caps")
+        factors.append(f"elevated risk in {domain} domain")
 
-    excl = heuristic_results.get("exclamation_ratio", 0)
-    if excl > 0.01:
-        score += min(excl * 5, 0.2)
-        factors.append("high exclamation use")
-
-    # llm contributions (placeholder)
-    confidence = llm_results.get("factual_confidence", 0.5)
-    if confidence < 0.4:
+    # llm contributions (when available)
+    llm_confidence = llm_results.get("factual_confidence")
+    if llm_confidence is not None and llm_confidence < 0.4:
         score += 0.2
         factors.append("low factual confidence")
 

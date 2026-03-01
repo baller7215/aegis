@@ -7,6 +7,11 @@ from typing import Any
 ContentMetadata = dict[str, Any]
 
 # heuristic analysis signals (e.g. sensational_words, all_caps_ratio)
+# {
+#   "confidence_score": float,
+#   "evidence_score": float,
+#   "domain": str
+# }
 HeuristicResults = dict[str, Any]
 
 # llm structured analysis output

@@ -276,14 +276,19 @@ function escapeHtml(str) {
 function mapApiToAnalysis(api) {
   if (!api || !api.risk) return null;
   const level = api.risk.level || "medium";
-  const confidence = api.llm_analysis?.factual_confidence ?? 0.5;
+  const confidence =
+    api.heuristics?.confidence_score ??
+    api.llm_analysis?.factual_confidence ??
+    0.5;
+  const evidence =
+    api.heuristics?.evidence_score ?? 1 - (api.llm_analysis?.factual_confidence ?? 0.5);
   return {
     riskLevel: level,
     label: api.risk.factors?.length
       ? `${level.charAt(0).toUpperCase() + level.slice(1)}: ${api.risk.factors[0]}`
       : `${level.charAt(0).toUpperCase() + level.slice(1)} confidence gap`,
     confidence,
-    evidence: 1 - confidence,
+    evidence,
     missingContext: api.llm_analysis?.claims ?? [],
     biasSummary:
       api.llm_analysis?.bias_indicators?.join("; ") ??
