@@ -9,7 +9,7 @@ class AnalyzeRequest(BaseModel):
 class AnalyzeTextRequest(BaseModel):
     text: str
     conversation: Optional[list[dict]] = None
-    numberOfSourcesUsed: int = 0
+    numberOfSourcesUsed: Optional[int] = None
 
 
 class RecalibrateRequest(BaseModel):

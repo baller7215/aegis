@@ -64,11 +64,9 @@ function getConversationThread() {
  */
 function isStreaming(container) {
   const article = container.closest("article");
-  if (!article) return false;
-  if (article.querySelector("[data-writing-block]")) return true;
-  if (article.classList.contains("has-data-writing-block")) return true;
-  const stopBtn = document.querySelector("[data-testid='stop-button']");
-  if (stopBtn && article.contains(stopBtn.closest("article"))) return true;
+  const bottom = document.querySelector("[id='thread-bottom']");
+  const stopBtn = bottom.querySelector("[data-testid='stop-button']");
+  if (stopBtn) return true;
   return false;
 }
 
@@ -181,7 +179,7 @@ async function fetchAnalysis(responseText, conversation = [], numberOfSourcesUse
       type: "analyze",
       text: responseText,
       conversation,
-      numberOfSourcesUsed,
+      numberOfSourcesUsed: numberOfSourcesUsed ?? 0,
     });
     return result ?? null;
   } catch (err) {

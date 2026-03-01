@@ -8,6 +8,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       body: JSON.stringify({
         text: message.text,
         conversation: message.conversation ?? [],
+        numberOfSourcesUsed: message.numberOfSourcesUsed ?? 0,
       }),
     })
       .then((res) => {

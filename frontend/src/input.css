@@ -123,7 +123,7 @@
     background: linear-gradient(90deg, #059669, #34d399) !important;
   }
   .aegis-meter-value {
-    @apply w-8 text-xs font-medium text-right;
+    @apply w-9 text-xs font-medium text-right;
   }
   .aegis-meter-value--low {
     @apply text-red-600 dark:text-red-400;

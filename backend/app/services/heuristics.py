@@ -97,9 +97,12 @@ def run_heuristics(text: str, numberOfSourcesUsed: int = 0) -> HeuristicResults:
     print(f"numberOfSourcesUsed: {numberOfSourcesUsed}")
 
     # use number of sources used if not 0
-    if numberOfSourcesUsed > 0:
+    if numberOfSourcesUsed > 0 and confidence_raw > 0:
         evidence_score = numberOfSourcesUsed / confidence_raw
         evidence_score = min(evidence_score, 1.0)
+    elif numberOfSourcesUsed > 0:
+        # fallback when confidence_raw <= 0: boost evidence based on sources
+        evidence_score = min(0.5 + numberOfSourcesUsed * 0.1, 1.0)
     else:
         # evidence score calculation: presence of evidence markers
         evidence_count = 0

@@ -27,7 +27,7 @@ async def run_analysis(request: AnalyzeRequest) -> dict:
 
 async def run_analysis_from_text(text: str, numberOfSourcesUsed: int = 0) -> dict:
     metadata = {"url": "", "title": "", "author": "", "publish_date": ""}
-    heuristic_results = run_heuristics(text, numberOfSourcesUsed)
+    heuristic_results = run_heuristics(text, numberOfSourcesUsed=numberOfSourcesUsed)
     llm_results = await run_llm_analysis(text)
     risk_results = compute_risk(heuristic_results, llm_results)
     return build_report(text, metadata, heuristic_results, llm_results, risk_results)
