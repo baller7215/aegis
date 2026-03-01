@@ -40,6 +40,15 @@ for (const f of files) {
     fs.copyFileSync(src, path.join(DIST, f));
   }
 }
+// copy icons folder
+const iconsDir = path.join(ROOT, "icons");
+const distIconsDir = path.join(DIST, "icons");
+if (fs.existsSync(iconsDir)) {
+  if (!fs.existsSync(distIconsDir)) fs.mkdirSync(distIconsDir, { recursive: true });
+  for (const f of fs.readdirSync(iconsDir)) {
+    fs.copyFileSync(path.join(iconsDir, f), path.join(distIconsDir, f));
+  }
+}
 
 // inject API_BASE_URL into background.js
 const bgSrc = fs.readFileSync(path.join(ROOT, "background.js"), "utf-8");

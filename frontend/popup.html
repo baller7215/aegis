@@ -2,13 +2,26 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="color-scheme" content="light dark">
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="popup">
-    <h1>aegis</h1>
-    <p>inline AI safety analysis for ChatGPT responses</p>
-    <button id="analyze">Analyze current page</button>
+    <header class="popup-header">
+      <span class="popup-shield" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </span>
+      <div class="popup-brand">
+        <h1 class="popup-title">aegis</h1>
+        <p class="popup-tagline">Inline AI safety analysis for ChatGPT</p>
+      </div>
+    </header>
+    <main class="popup-body">
+      <p class="popup-desc">Risk assessment and calibration signals appear below each ChatGPT response.</p>
+      <a id="openChatGPT" href="https://chatgpt.com" target="_blank" rel="noopener" class="popup-btn popup-btn-primary">Open ChatGPT</a>
+    </main>
   </div>
   <script src="popup.js"></script>
 </body>
