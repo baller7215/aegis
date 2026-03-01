@@ -1,8 +1,9 @@
-"""Rule-based heuristic analysis of text."""
+"""rule-based and semantic similarity-based heuristic analysis of text"""
 
 import re
 
 from app.models.analysis_models import HeuristicResults
+from app.services.semantic_confidence import compute_semantic_confidence
 
 # TODO: expand with more words or make more dynamic w transformers/llms
 CERTAINTY_WORDS = [
@@ -91,6 +92,16 @@ def run_heuristics(text: str, numberOfSourcesUsed: int = 0) -> HeuristicResults:
     # base confidence score is 0.5, +0.3 per net certainty, -0.3 per net hedge; clamp to [0, 1]
     confidence_score = 0.5 + 0.3 * confidence_raw
     confidence_score = min(max(confidence_score, 0.0), 1.0)
+
+    # ensemble with semantic similarity-based confidence
+    heuristic_score = confidence_score
+    semantic_score = compute_semantic_confidence(text)
+    if semantic_score is not None:
+        confidence_score = 0.5 * heuristic_score + 0.5 * semantic_score
+        confidence_score = min(max(confidence_score, 0.0), 1.0)
+        print(f"[Aegis heuristics] confidence: heuristic={heuristic_score:.2f}, semantic={semantic_score:.2f} -> blended={confidence_score:.2f}")
+    else:
+        print(f"[Aegis heuristics] confidence: heuristic={heuristic_score:.2f}, semantic=fallback -> using keyword-only")
 
     print(f"confidence_raw: {confidence_raw}")
     print(f"confidence_score: {confidence_score}")

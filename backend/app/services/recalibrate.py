@@ -1,4 +1,4 @@
-"""Recalibration: align confidence with evidence via epistemic correction."""
+"""recalibration: align confidence with evidence via epistemic correction"""
 
 import os
 
