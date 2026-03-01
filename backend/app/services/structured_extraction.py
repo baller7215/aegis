@@ -18,7 +18,6 @@ Analyze the following AI response and extract:
 4. Bias explanation (string or null): Brief explanation if bias detected.
 5. Potential failure modes (list): Ways this answer could be wrong, misleading, or misapplied.
 6. Decision delegation detected (boolean): Does the response encourage the user to make high-stakes decisions without sufficient caveats?
-7. Context sensitivity (object): Keys like "time_sensitive", "location_sensitive", "population_specific" with boolean values.
 
 Return JSON only. No commentary.
 Format:
@@ -28,8 +27,7 @@ Format:
   "bias_type": "..." or null,
   "bias_explanation": "..." or null,
   "failure_modes": ["..."],
-  "decision_delegation_detected": false,
-  "context_sensitivity": {"time_sensitive": false, "location_sensitive": false, "population_specific": false}
+  "decision_delegation_detected": false
 }
 
 AI response to analyze:
@@ -48,8 +46,7 @@ async def extract_structured_signals(text: str) -> ExtractionResult:
         "bias_type": "..." or null,
         "bias_explanation": "..." or null,
         "failure_modes": ["..."],
-        "decision_delegation_detected": false,
-        "context_sensitivity": {"time_sensitive": false, "location_sensitive": false, "population_specific": false}
+        "decision_delegation_detected": false
     }
     """
     if not text or not text.strip():
@@ -89,5 +86,4 @@ async def extract_structured_signals(text: str) -> ExtractionResult:
         bias_explanation=data.get("bias_explanation"),
         failure_modes=data.get("failure_modes", []) or [],
         decision_delegation_detected=data.get("decision_delegation_detected", False),
-        context_sensitivity=data.get("context_sensitivity", {}) or {},
     )

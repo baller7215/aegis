@@ -1,15 +1,9 @@
 from fastapi import APIRouter
-from app.models.request_models import AnalyzeRequest, AnalyzeTextRequest, RecalibrateRequest
-from app.services.aggregator import run_analysis, run_analysis_from_text
+from app.models.request_models import AnalyzeTextRequest, RecalibrateRequest
+from app.services.aggregator import run_analysis_from_text
 from app.services.recalibrate import run_recalibration
 
 router = APIRouter()
-
-
-@router.post("/analyze")
-async def analyze(request: AnalyzeRequest):
-    result = await run_analysis(request)
-    return result
 
 
 @router.post("/analyze/text")

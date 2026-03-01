@@ -12,4 +12,3 @@ class ExtractionResult(BaseModel):
     bias_explanation: Optional[str] = None
     failure_modes: list[str] = []
     decision_delegation_detected: bool = False
-    context_sensitivity: dict = {}

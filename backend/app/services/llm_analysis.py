@@ -14,7 +14,6 @@ async def run_llm_analysis(text: str) -> LLMResults:
             "bias_explanation": None,
             "failure_modes": [],
             "decision_delegation_detected": False,
-            "context_sensitivity": {},
         }
 
     result = await extract_structured_signals(text)
@@ -25,5 +24,4 @@ async def run_llm_analysis(text: str) -> LLMResults:
         "bias_explanation": result.bias_explanation,
         "failure_modes": result.failure_modes,
         "decision_delegation_detected": result.decision_delegation_detected,
-        "context_sensitivity": result.context_sensitivity,
     }

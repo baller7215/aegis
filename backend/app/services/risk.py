@@ -12,10 +12,7 @@ def compute_risk(
     factors: list[str] = []
 
     # confidence vs evidence gap (primary signal)
-    confidence = heuristic_results.get(
-        "confidence_score",
-        llm_results.get("factual_confidence", 0.5),
-    )
+    confidence = heuristic_results.get("confidence_score", 0.5)
     evidence = heuristic_results.get("evidence_score", 0.5)
     gap = confidence - evidence
     if gap > 0.3:
@@ -29,12 +26,6 @@ def compute_risk(
     if domain in ("medical", "legal", "financial") and gap > 0.2:
         score += 0.15
         factors.append(f"elevated risk in {domain} domain")
-
-    # llm contributions (when available)
-    llm_confidence = llm_results.get("factual_confidence")
-    if llm_confidence is not None and llm_confidence < 0.4:
-        score += 0.2
-        factors.append("low factual confidence")
 
     # clamp to [0, 1]
     score = min(max(score, 0), 1)

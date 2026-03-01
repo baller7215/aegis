@@ -1,14 +1,10 @@
-from pydantic import BaseModel, HttpUrl
 from typing import Optional
 
-
-class AnalyzeRequest(BaseModel):
-    url: HttpUrl
+from pydantic import BaseModel
 
 
 class AnalyzeTextRequest(BaseModel):
     text: str
-    conversation: Optional[list[dict]] = None
     numberOfSourcesUsed: Optional[int] = None
 
 
